@@ -1,0 +1,75 @@
+# Ignore common Python files and directories
+# Byte-code files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+# Common names for virtual environments
+.venv/
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Mypy cache
+.mypy_cache/
+
+# Pip logs
+pip-log.txt
+pip-delete-this-arg.txt
+
+# Sphinx documentation build directory
+site/
+
+# Ignore common IDE and editor files
+# PyCharm / IntelliJ IDEA
+.idea/
+
+# VS Code
+.vscode/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# macOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Project-specific ignores
+# Configuration files:
+# These files often contain user-specific paths or rules that should not be
+# committed to version control. It's common practice to provide example
+# configuration files (e.g., config.yaml.example) and ignore the actual
+# configuration files that users will modify.
+config.yaml
+rules.yaml
+
+# Log files
+# If the application generates log files, they should typically be ignored.
+logs/
+*.log
+
+# Any temporary or output directories created by the file organizer
+# For example, if the organizer creates a directory to move files into,
+# and that directory is not meant to be part of the source control.
+# This is a placeholder; adjust based on actual output paths.
+# organized_files/
+# temp_output/

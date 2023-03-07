@@ -1,0 +1,94 @@
+# Global configuration for the File Organizer application.
+
+# --- Core Directories ---
+# The primary directory to monitor for new or modified files.
+# This should be an absolute path or relative to the application's working directory.
+# Example: "/home/user/Downloads" or "./my_unorganized_files"
+source_directory: "./unorganized_files"
+
+# The root directory where organized files will be moved or copied to.
+# Subdirectories will be created within this root based on the organization rules defined in rules.yaml.
+# Example: "/home/user/Documents/Organized" or "./organized_files"
+destination_root_directory: "./organized_files"
+
+# --- Logging Configuration ---
+logging:
+  # The minimum level of messages to log (DEBUG, INFO, WARNING, ERROR, CRITICAL).
+  # DEBUG: Detailed information, typically only of interest when diagnosing problems.
+  # INFO: Confirmation that things are working as expected.
+  # WARNING: An indication that something unexpected happened, or indicative of some problem in the near future.
+  # ERROR: Due to a more serious problem, the software has not been able to perform some function.
+  # CRITICAL: A serious error, indicating that the program itself may be unable to continue running.
+  level: "INFO"
+  # The path to the log file. If not specified or empty, logs will go to stdout.
+  # Example: "/var/log/file_organizer.log" or "file_organizer.log"
+  log_file: "file_organizer.log"
+  # Maximum size of the log file in bytes before rotation (e.g., 10MB = 10 * 1024 * 1024 = 10485760).
+  # Set to 0 for no rotation based on size.
+  max_bytes: 10485760 # 10 MB
+  # Number of backup log files to keep. When the log file reaches max_bytes, it's rotated,
+  # and up to this many old log files are kept.
+  backup_count: 5
+  # Format string for log messages.
+  # Common formatters:
+  # %(asctime)s: Human-readable time when the LogRecord was created.
+  # %(name)s: Name of the logger.
+  # %(levelname)s: Text logging level for the message (e.g., 'INFO', 'DEBUG').
+  # %(message)s: The logged message.
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# --- Watcher Configuration ---
+watcher:
+  # Delay in seconds to debounce file system events.
+  # This helps prevent multiple triggers for a single file save operation (e.g., an editor saving multiple times).
+  debounce_delay_seconds: 1.0
+  # Whether the watcher should monitor subdirectories recursively within the source_directory.
+  # Set to 'true' to watch all subfolders, 'false' to watch only the top-level source_directory.
+  recursive: true
+  # List of file patterns or directory names to ignore during watching.
+  # Events related to these patterns will not trigger organization actions.
+  # These are typically temporary files, system files, or version control directories.
+  # Patterns use fnmatch-style wildcards (e.g., "*.tmp", ".*", "__pycache__").
+  ignore_patterns:
+    - "*.tmp"
+    - "*.DS_Store"
+    - "Thumbs.db"
+    - ".git"
+    - "__pycache__"
+    - ".idea"
+    - ".vscode"
+    - ".env"
+
+# --- Organizer Configuration ---
+organizer:
+  # The path to the rules YAML file that defines how files should be organized.
+  # This can be an absolute path or relative to the application's working directory.
+  rules_file: "rules.yaml"
+  # Action to perform on files that match a rule: 'move' or 'copy'.
+  # 'move': Files are moved from source to destination.
+  # 'copy': Files are copied from source to destination, original remains (unless delete_original_after_copy is true).
+  action: "move"
+  # If true, the organizer will only simulate actions without actually moving/copying files.
+  # Useful for testing and verifying rules without affecting your file system.
+  dry_run: false
+  # If true, the organizer will automatically create destination directories if they don't exist.
+  # If false, an error might occur if a destination path does not exist.
+  create_destination_dirs: true
+  # If true, files with the same name in the destination will be overwritten.
+  # If false, a unique name will be generated (e.g., "file (1).txt", "file (2).txt").
+  overwrite_existing_files: false
+  # If true, the original file will be deleted from the source_directory after a successful copy operation.
+  # This setting is only relevant when 'action' is 'copy'. If 'action' is 'move', the original is always deleted.
+  delete_original_after_copy: false
+  # List of file patterns or directory names to explicitly exclude from organization.
+  # Even if a file matches a rule, if it also matches one of these patterns, it will be skipped.
+  # This is useful for preventing the organizer from moving its own configuration or log files.
+  exclude_from_organization:
+    - "*.log" # Don't move the application's own log file
+    - "config.yaml"
+    - "rules.yaml"
+    - ".gitignore"
+    - "requirements.txt"
+    - "LICENSE"
+    - "pyproject.toml"
+    - "README.md"

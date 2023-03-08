@@ -1,0 +1,123 @@
+```toml
+# pyproject.toml
+
+# PEP 621: Project Metadata
+# Defines the core metadata for the project, making it discoverable and installable.
+# This section contains information about the project itself, its authors, license,
+# dependencies, and how it should be presented to users and package managers.
+[project]
+name = "file-organizer"
+version = "0.1.0"
+description = "Automatically organizes files in a directory by type, date, or custom rules"
+readme = "README.md"
+requires-python = ">=3.9" # Minimum Python version required for this project.
+license = { file = "LICENSE" } # Specifies the license file for the project.
+authors = [
+    # List of project authors. Replace with actual names and emails.
+    { name = "Your Name", email = "your.email@example.com" },
+]
+keywords = ["file", "organizer", "automation", "watchdog", "pathlib", "rules", "utility"]
+classifiers = [
+    # Standard PyPI classifiers that help users find the project.
+    "Development Status :: 3 - Alpha", # Indicates the maturity level of the project.
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License", # Assuming MIT based on common practice.
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Filesystems",
+    "Topic :: Utilities",
+]
+
+# Core runtime dependencies for the project.
+# These packages will be installed when the 'file-organizer' package is installed.
+dependencies = [
+    "watchdog>=2.3.1", # Used for monitoring file system events in src/watcher.py.
+    "PyYAML>=6.0",     # Used for parsing configuration files (config.yaml, rules.yaml).
+    # pathlib is part of the Python standard library, so it does not need to be listed here.
+]
+
+# Entry points for the application.
+# This allows the project to be installed as a command-line tool,
+# making `file-organizer` executable directly from the terminal.
+[project.scripts]
+file-organizer = "src.main:main" # Maps the command 'file-organizer' to the main() function in src/main.py.
+
+# Optional project URLs for documentation, repository, and bug tracking.
+# Replace with actual URLs once the project is hosted.
+[project.urls]
+Homepage = "https://github.com/your-org/file-organizer"
+Repository = "https://github.com/your-org/file-organizer"
+"Bug Tracker" = "https://github.com/your-org/file-organizer/issues"
+
+# PEP 517/518: Build System Requirements
+# Specifies the build backend used to create distributions (e.g., wheels, source distributions).
+# Setuptools is a common choice for Python projects.
+[build-system]
+requires = ["setuptools>=61.0", "wheel"] # Tools required to build the package.
+build-backend = "setuptools.build_meta" # The backend that performs the build process.
+
+# Tool-specific configurations follow.
+# These sections are used by various development tools (linters, formatters, test runners)
+# to configure their behavior for this project.
+
+# Setuptools configuration for package discovery.
+# This tells setuptools to look for Python packages within the 'src' directory,
+# following the common 'src-layout' project structure.
+[tool.setuptools.packages.find]
+where = ["src"] # Search for packages in the 'src' directory.
+
+# Ruff configuration (Linter and Formatter)
+# Ruff is a very fast Python linter and formatter, often replacing Black, isort, and Flake8.
+# It's a modern best practice for production-quality Python projects to ensure code quality and consistency.
+[tool.ruff]
+# Exclude files and directories from linting and formatting.
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+    ".venv",
+    "docs",
+    "tests", # Often tests have different linting rules or are excluded from general linting.
+]
+# Maximum line length for code.
+line-length = 120
+# Target Python version for linting rules (e.g., for `pyupgrade` checks).
+target-version = "py39"
+
+[tool.ruff.lint]
+# Enable specific lint rules by their codes.
+# Common categories:
+# F: Pyflakes (unused imports, undefined names)
+# E, W: pycodestyle (PEP 8 style errors and warnings)
+# I: isort (import sorting)
+# UP: pyupgrade (suggests modern Python syntax)
+# B: Bugbear (common potential bugs)
+# C: Complexity (e.g., cognitive complexity)
+# N: Naming (variable, function, class naming conventions)
+# S: Bandit (security issues)
+# RUF: Ruff-specific rules
+select = ["E", "F", "W", "I", "UP", "B", "C", "N", "S", "RUF"]
+# Ignore specific rules globally.
+ignore = [
+    "E501", # Line too long (handled by Ruff's formatter).
+    "C901", # Too complex (often for specific algorithms or legacy code, can be re-enabled if desired).
+    # Naming convention ignores can be added if specific patterns are desired (e.g., for test methods).
+    # "N802", # Function name should be lowercase.
+    # "N803", # Argument name should be lowercase.
+    # "N806", # Variable in function should be lowercase.
+]
+# Per-file-ignores can be useful for specific patterns, e.g., test files.
+# per-file-ignores = { "tests/*.py" = ["S101"] } # S101: Use of assert (common in tests).
+
+[tool.ruff.format]
+# Enable Ruff's built-in formatter. This can replace standalone formatters like Black.
+# It uses the same rules as the linter for consistency.
+quote-style = "double"
+indent-style = "space"
+skip-magic

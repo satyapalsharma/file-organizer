@@ -1,0 +1,74 @@
+# File: rules.yaml
+# Description: Defines the organization rules for the File Organizer project.
+#
+# This file contains a list of rules that the File Organizer will use to process files.
+# Each rule specifies criteria for files and an action to perform when those criteria are met.
+#
+# Rules are processed in order of their 'priority' (lower number = higher priority).
+# If multiple rules match a file, the one with the highest priority (lowest number) will be applied.
+#
+# Structure of a rule:
+# - name: A unique, descriptive name for the rule.
+#   enabled: true/false - Whether this rule is active.
+#   priority: An integer (lower number = higher priority).
+#   source:
+#     path: The directory path relative to the watched directory where files are searched.
+#           Use '.' for the watched directory itself.
+#           Can also be a glob pattern (e.g., 'downloads/*', 'temp_files/').
+#   conditions: # A list of conditions. ALL conditions must be met for the rule to apply (AND logic).
+#     - type: 'extension'
+#       value: ['.pdf', '.docx', '.txt'] # List of file extensions to match (case-insensitive).
+#     - type: 'filename_regex'
+#       value: '^report_.*\.xlsx$' # Regular expression for the filename (e.g., 'report_Q1_2023.xlsx').
+#     - type: 'min_size_mb'
+#       value: 10 # Minimum file size in megabytes.
+#     - type: 'max_size_mb'
+#       value: 500 # Maximum file size in megabytes.
+#     - type: 'age_days_gt'
+#       value: 30 # Files older than X days (greater than). Based on modification time.
+#     - type: 'age_days_lt'
+#       value: 7 # Files newer than X days (less than). Based on modification time.
+#     - type: 'contains_text' # For text-based files, checks if content contains specific text (can be slow).
+#       value: 'confidential project'
+#   action:
+#     type: 'move' # The action to perform: 'move', 'copy', 'delete'.
+#     destination: 'Documents/{year}/{month}' # Destination path relative to the watched directory.
+#                                            # Supports placeholders:
+#                                            # {year}, {month}, {day} (from file modification date)
+#                                            # {extension} (e.g., 'pdf', 'jpg')
+#                                            # {filename_base} (filename without extension)
+#                                            # {original_filename} (full filename with extension)
+#                                            # {timestamp} (Unix timestamp of modification date)
+#     on_conflict: 'rename' # What to do if a file with the same name already exists at the destination:
+#                           # 'rename': Appends a number (e.g., file (1).txt)
+#                           # 'overwrite': Replaces the existing file
+#                           # 'skip': Does nothing, leaves the original file
+#     create_dirs: true # Whether to create destination directories if they don't exist.
+#
+# Note: All paths (source.path, action.destination) are relative to the base directory being watched.
+#       The system will ensure files are not moved into the same directory they are already in.
+
+rules:
+  # --- General Document Organization ---
+  - name: Organize Documents
+    enabled: true
+    priority: 100
+    source:
+      path: "." # Look in the root of the watched directory
+    conditions:
+      - type: 'extension'
+        value: ['.pdf', '.docx', '.doc', '.txt', '.odt', '.rtf', '.md']
+    action:
+      type: 'move'
+      destination: 'Documents/{year}/{month}'
+      on_conflict: 'rename'
+      create_dirs: true
+
+  - name: Organize Spreadsheets
+    enabled: true
+    priority: 110
+    source:
+      path: "."
+    conditions:
+      - type: 'extension'
+        value: ['.xlsx', '.xls', '.csv', '.ods
